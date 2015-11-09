@@ -1,0 +1,15 @@
+Use public hostname for full hostname during reconfig
+else run:
+hostname short_hostname &&  rocks add host alias short FQDN && rocks sync config
+
+
+Fix proxy in yum.conf
+Change root password, re-generate ssh keys
+NTP
+Decide managed/unmanaged and kickstartable appliances
+Remove v00 from hosts after fixing 
+
+#NOT needed
+Fix root directory permissions
+inittab
+

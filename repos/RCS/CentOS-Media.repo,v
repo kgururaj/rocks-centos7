@@ -1,0 +1,69 @@
+head	1.2;
+access;
+symbols;
+locks
+	root:1.2; strict;
+comment	@# @;
+
+
+1.2
+date	2015.10.27.23.24.27;	author root;	state Exp;
+branches;
+next	1.1;
+
+1.1
+date	2015.10.27.23.24.27;	author root;	state Exp;
+branches;
+next	;
+
+
+desc
+@initial revision: 1.1
+done
+RCS/CentOS-Debuginfo.repo,v  <--  CentOS-Debuginfo.repo
+new revision: 1.2; previous revision: 1.1
+done
+RCS/CentOS-Media.repo,v  <--  CentOS-Media.repo
+@
+
+
+1.2
+log
+@Disabled by Rocks Post Config
+@
+text
+@# CentOS-Media.repo
+#
+#  This repo can be used with mounted DVD media, verify the mount point for
+#  CentOS-6.  You can use this repo and yum to install items directly off the
+#  DVD ISO that we release.
+#
+# To use this repo, put in your DVD and use it with the other repos too:
+#  yum --enablerepo=c6-media [command]
+#  
+# or for ONLY the media repo, do this:
+#
+#  yum --disablerepo=\* --enablerepo=c6-media [command]
+ 
+[c6-media]
+enabled = 0 
+name=CentOS-$releasever - Media
+baseurl=file:///media/CentOS/
+        file:///media/cdrom/
+        file:///media/cdrecorder/
+gpgcheck=1
+
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-6
+@
+
+
+1.1
+log
+@Original File
+@
+text
+@d15 1
+d21 1
+a21 1
+enabled=0
+@

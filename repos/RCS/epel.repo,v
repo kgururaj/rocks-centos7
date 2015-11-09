@@ -1,0 +1,84 @@
+head	1.2;
+access;
+symbols;
+locks
+	root:1.2; strict;
+comment	@# @;
+
+
+1.2
+date	2015.10.27.23.24.27;	author root;	state Exp;
+branches;
+next	1.1;
+
+1.1
+date	2015.10.27.23.24.27;	author root;	state Exp;
+branches;
+next	;
+
+
+desc
+@initial revision: 1.1
+done
+RCS/epel-testing.repo,v  <--  epel-testing.repo
+new revision: 1.2; previous revision: 1.1
+done
+RCS/epel.repo,v  <--  epel.repo
+@
+
+
+1.2
+log
+@Disabled by Rocks Post Config
+@
+text
+@[epel]
+enabled = 0 
+name=Extra Packages for Enterprise Linux 6 - $basearch
+#baseurl=http://download.fedoraproject.org/pub/epel/6/$basearch
+mirrorlist=https://mirrors.fedoraproject.org/metalink?repo=epel-6&arch=$basearch
+failovermethod=priority
+
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-EPEL-6
+
+[epel-debuginfo]
+enabled = 0 
+name=Extra Packages for Enterprise Linux 6 - $basearch - Debug
+#baseurl=http://download.fedoraproject.org/pub/epel/6/$basearch/debug
+mirrorlist=https://mirrors.fedoraproject.org/metalink?repo=epel-debug-6&arch=$basearch
+failovermethod=priority
+
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-EPEL-6
+gpgcheck=1
+
+[epel-source]
+enabled = 0 
+name=Extra Packages for Enterprise Linux 6 - $basearch - Source
+#baseurl=http://download.fedoraproject.org/pub/epel/6/SRPMS
+mirrorlist=https://mirrors.fedoraproject.org/metalink?repo=epel-source-6&arch=$basearch
+failovermethod=priority
+
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-EPEL-6
+gpgcheck=1
+@
+
+
+1.1
+log
+@Original File
+@
+text
+@d2 1
+d7 1
+a7 1
+enabled=1
+d12 1
+d17 1
+a17 1
+enabled=0
+d22 1
+d27 1
+a27 1
+enabled=0
+@

@@ -1,0 +1,19 @@
+{
+	"hostname" : "rocks-vlan100",
+	"public_eth" : 
+		{
+			"name" : "eth3",
+			"ip_source" : "dynamic"
+		},
+        "private_eth" : 
+		{
+			"name" : "eth2",
+                        "ip" : "192.168.100.2",
+			"gateway" : "192.168.1.1",
+			"gateway_name" : "gateway",
+			"vm_host" : "192.168.100.1",
+			"vm_host_name" : "compute-0-0",
+			"netmask" : "255.255.255.0",
+			"zone" : "vlan100.ccc.org"
+		}
+}

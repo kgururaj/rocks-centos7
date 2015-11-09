@@ -1,0 +1,101 @@
+head	1.2;
+access;
+symbols;
+locks
+	root:1.2; strict;
+comment	@# @;
+
+
+1.2
+date	2015.10.27.23.24.27;	author root;	state Exp;
+branches;
+next	1.1;
+
+1.1
+date	2015.10.27.23.24.27;	author root;	state Exp;
+branches;
+next	;
+
+
+desc
+@initial revision: 1.1
+done
+RCS/CentOS-Vault.repo,v  <--  CentOS-Vault.repo
+new revision: 1.2; previous revision: 1.1
+done
+RCS/elrepo.repo,v  <--  elrepo.repo
+@
+
+
+1.2
+log
+@Disabled by Rocks Post Config
+@
+text
+@### Name: ELRepo.org Community Enterprise Linux Repository for el6
+### URL: http://elrepo.org/
+
+[elrepo]
+enabled = 0 
+name=ELRepo.org Community Enterprise Linux Repository - el6
+baseurl=http://elrepo.org/linux/elrepo/el6/$basearch/
+mirrorlist=http://elrepo.org/mirrors-elrepo.el6
+
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-elrepo.org
+protect=0
+
+[elrepo-testing]
+enabled = 0 
+name=ELRepo.org Community Enterprise Linux Testing Repository - el6
+baseurl=http://elrepo.org/linux/testing/el6/$basearch/
+mirrorlist=http://elrepo.org/mirrors-elrepo-testing.el6
+
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-elrepo.org
+protect=0
+
+[elrepo-kernel]
+enabled = 0 
+name=ELRepo.org Community Enterprise Linux Kernel Repository - el6
+baseurl=http://elrepo.org/linux/kernel/el6/$basearch/
+mirrorlist=http://elrepo.org/mirrors-elrepo-kernel.el6
+
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-elrepo.org
+protect=0
+
+[elrepo-extras]
+enabled = 0 
+name=ELRepo.org Community Enterprise Linux Repository - el6
+baseurl=http://elrepo.org/linux/extras/el6/$basearch/
+mirrorlist=http://elrepo.org/mirrors-elrepo-extras.el6
+
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-elrepo.org
+protect=0
+@
+
+
+1.1
+log
+@Original File
+@
+text
+@d5 1
+d9 1
+a9 1
+enabled=1
+d15 1
+d19 1
+a19 1
+enabled=0
+d25 1
+d29 1
+a29 1
+enabled=0
+d35 1
+d39 1
+a39 1
+enabled=0
+@

@@ -1,0 +1,69 @@
+#!/usr/bin/env python
+
+import sys
+import os
+import subprocess
+import shutil
+import fix_rocks_network
+
+pxelinux_kernels_dir='/tftpboot/pxelinux/';
+centos7_dir='/export/rocks/install/centos7/';
+centos7_ks_scripts_dir=centos7_dir+'/scripts/';
+centos7_pxeboot_dir=centos7_dir+'/images/pxeboot';
+
+#Fix PXE boot bug
+def fix_pxe_bug():
+    shutil.copy('/usr/share/syslinux/chain.c32', pxelinux_kernels_dir);
+    subprocess.call('rocks add bootaction action=os kernel="com32 chain.c32" args="hd0"', shell=True);
+
+def fix_install_action():
+    shutil.copy(centos7_pxeboot_dir+'/vmlinuz', pxelinux_kernels_dir+'/vmlinuz-centos7');
+    shutil.copy(centos7_pxeboot_dir+'/initrd.img', pxelinux_kernels_dir+'/initrd.img-centos7');
+    ks_host = fix_rocks_network.get_rocks_attr('Kickstart_PrivateKickstartHost');
+    ks_base_dir = fix_rocks_network.get_rocks_attr('Kickstart_PrivateKickstartBasedir');
+    subprocess.call('rocks add bootaction action=install kernel=vmlinuz-centos7 ramdisk=initrd.img-centos7 args="ksdevice=bootif ramdisk_size=16000 ks=http://'+ks_host+'/'+ks_base_dir+'/centos7/ks.cfg"', shell=True);
+
+def setup_for_centos7(ssh_public_key_file=None): 
+  #PXE boot changes
+  fix_pxe_bug();
+  fix_install_action();
+  #Create new appliance type, if needed
+  #status = subprocess.call('rocks list appliance attr centos7', shell=True, stderr=subprocess.PIPE, stdout=subprocess.PIPE);
+  #if(status != 0):	#no such appliance exists
+  subprocess.call('rocks remove appliance compute', shell=True);
+  subprocess.call('rocks add appliance compute membership="Compute" node=compute', shell=True);
+  #ssh public key
+  shutil.rmtree(centos7_ks_scripts_dir+'/ssh_public_key', ignore_errors=True);
+  if(ssh_public_key_file):
+    shutil.copy(ssh_public_key_file, centos7_ks_scripts_dir+'/ssh_public_key');
+  #Get root password
+  root_passwd='$6$CdGXnN6zABQ0Pc/7$lsUtU27wSxwpGNrLQq00Mzpwb27ujgkV5Trq8wlZrqOmrmFuX6q5X0hebNKKs5DSk8.fU3o.b6Z0ISOfNnpTl.';
+  sys.stderr.write('Enter the root password to be set for your cluster by kickstart\n');
+  pid = subprocess.Popen('grub-crypt --sha-512', shell=True, stdout=subprocess.PIPE);
+  stdout_str = pid.communicate()[0];
+  if(pid.returncode == 0):
+    root_passwd = stdout_str.strip();
+  else:
+    sys.stderr.write('ERROR: could not obtain root password, using a random string. Re-run the program to set your root passwd\n');
+  #Create files from templates
+  shutil.copy(centos7_dir+'/ks_template.cfg', centos7_dir+'/ks.cfg');
+  shutil.copy(centos7_ks_scripts_dir+'/pre_install_template.sh', centos7_ks_scripts_dir+'/pre_install.sh');
+  shutil.copy(centos7_ks_scripts_dir+'/post_install_template.sh', centos7_ks_scripts_dir+'/post_install.sh');
+  ks_host = fix_rocks_network.get_rocks_attr('Kickstart_PrivateKickstartHost');
+  ks_base_dir = fix_rocks_network.get_rocks_attr('Kickstart_PrivateKickstartBasedir');
+  cmd = 'sed -i -e \'s/Kickstart_PrivateKickstartHost/'+ks_host+'/g\' -e \'s/Kickstart_PrivateKickstartBasedir/'+ks_base_dir+'/g\' '+centos7_ks_scripts_dir+'/post_install.sh '+centos7_ks_scripts_dir+'/pre_install.sh '+centos7_dir+'/ks.cfg';
+  status = subprocess.call(cmd, shell=True);
+  if(status != 0):
+    sys.stderr.write('ERROR: could not setup pre/post install scripts and kickstart file\n');
+    raise Exception('Could not setup pre/post install scripts and kickstart file');
+  with open(centos7_dir+'/ks.cfg', 'ab') as fptr:
+    fptr.write('rootpw --iscrypted '+root_passwd+' \n');
+    fptr.close();
+
+
+if __name__ == "__main__":
+    if(len(sys.argv) < 2):
+      setup_for_centos7();
+    else:
+      setup_for_centos7(sys.argv[1]);
+

@@ -1,0 +1,353 @@
+head	1.2;
+access;
+symbols;
+locks
+	root:1.2; strict;
+comment	@# @;
+
+
+1.2
+date	2015.10.27.23.24.27;	author root;	state Exp;
+branches;
+next	1.1;
+
+1.1
+date	2015.10.27.23.24.27;	author root;	state Exp;
+branches;
+next	;
+
+
+desc
+@initial revision: 1.1
+done
+RCS/CentOS-Media.repo,v  <--  CentOS-Media.repo
+new revision: 1.2; previous revision: 1.1
+done
+RCS/CentOS-Vault.repo,v  <--  CentOS-Vault.repo
+@
+
+
+1.2
+log
+@Disabled by Rocks Post Config
+@
+text
+@# CentOS-Vault.repo
+#
+# CentOS Vault holds packages from previous releases within the same CentOS Version
+# these are packages obsoleted by the current release and should usually not 
+# be used in production
+#-----------------
+
+[C6.0-base]
+enabled = 0 
+name=CentOS-6.0 - Base
+baseurl=http://vault.centos.org/6.0/os/$basearch/
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-6
+
+
+[C6.0-updates]
+enabled = 0 
+name=CentOS-6.0 - Updates
+baseurl=http://vault.centos.org/6.0/updates/$basearch/
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-6
+
+
+[C6.0-extras]
+enabled = 0 
+name=CentOS-6.0 - Extras
+baseurl=http://vault.centos.org/6.0/extras/$basearch/
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-6
+
+
+[C6.0-contrib]
+enabled = 0 
+name=CentOS-6.0 - Contrib
+baseurl=http://vault.centos.org/6.0/contrib/$basearch/
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-6
+
+
+[C6.0-centosplus]
+enabled = 0 
+name=CentOS-6.0 - CentOSPlus
+baseurl=http://vault.centos.org/6.0/centosplus/$basearch/
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-6
+
+#-----------------
+
+[C6.1-base]
+enabled = 0 
+name=CentOS-6.1 - Base
+baseurl=http://vault.centos.org/6.1/os/$basearch/
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-6
+
+
+[C6.1-updates]
+enabled = 0 
+name=CentOS-6.1 - Updates
+baseurl=http://vault.centos.org/6.1/updates/$basearch/
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-6
+
+
+[C6.1-extras]
+enabled = 0 
+name=CentOS-6.1 - Extras
+baseurl=http://vault.centos.org/6.1/extras/$basearch/
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-6
+
+
+[C6.1-contrib]
+enabled = 0 
+name=CentOS-6.1 - Contrib
+baseurl=http://vault.centos.org/6.1/contrib/$basearch/
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-6
+
+
+[C6.1-centosplus]
+enabled = 0 
+name=CentOS-6.1 - CentOSPlus
+baseurl=http://vault.centos.org/6.1/centosplus/$basearch/
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-6
+
+#-----------------
+
+[C6.2-base]
+enabled = 0 
+name=CentOS-6.2 - Base
+baseurl=http://vault.centos.org/6.2/os/$basearch/
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-6
+
+
+[C6.2-updates]
+enabled = 0 
+name=CentOS-6.2 - Updates
+baseurl=http://vault.centos.org/6.2/updates/$basearch/
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-6
+
+
+[C6.2-extras]
+enabled = 0 
+name=CentOS-6.2 - Extras
+baseurl=http://vault.centos.org/6.2/extras/$basearch/
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-6
+
+
+[C6.2-contrib]
+enabled = 0 
+name=CentOS-6.2 - Contrib
+baseurl=http://vault.centos.org/6.2/contrib/$basearch/
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-6
+
+
+[C6.2-centosplus]
+enabled = 0 
+name=CentOS-6.2 - CentOSPlus
+baseurl=http://vault.centos.org/6.2/centosplus/$basearch/
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-6
+
+#-----------------
+
+[C6.3-base]
+enabled = 0 
+name=CentOS-6.3 - Base
+baseurl=http://vault.centos.org/6.3/os/$basearch/
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-6
+
+
+[C6.3-updates]
+enabled = 0 
+name=CentOS-6.3 - Updates
+baseurl=http://vault.centos.org/6.3/updates/$basearch/
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-6
+
+
+[C6.3-extras]
+enabled = 0 
+name=CentOS-6.3 - Extras
+baseurl=http://vault.centos.org/6.3/extras/$basearch/
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-6
+
+
+[C6.3-contrib]
+enabled = 0 
+name=CentOS-6.3 - Contrib
+baseurl=http://vault.centos.org/6.3/contrib/$basearch/
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-6
+
+
+[C6.3-centosplus]
+enabled = 0 
+name=CentOS-6.3 - CentOSPlus
+baseurl=http://vault.centos.org/6.3/centosplus/$basearch/
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-6
+
+#-----------------
+
+[C6.4-base]
+enabled = 0 
+name=CentOS-6.4 - Base
+baseurl=http://vault.centos.org/6.4/os/$basearch/
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-6
+
+
+[C6.4-updates]
+enabled = 0 
+name=CentOS-6.4 - Updates
+baseurl=http://vault.centos.org/6.4/updates/$basearch/
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-6
+
+
+[C6.4-extras]
+enabled = 0 
+name=CentOS-6.4 - Extras
+baseurl=http://vault.centos.org/6.4/extras/$basearch/
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-6
+
+
+[C6.4-contrib]
+enabled = 0 
+name=CentOS-6.4 - Contrib
+baseurl=http://vault.centos.org/6.4/contrib/$basearch/
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-6
+
+
+[C6.4-centosplus]
+enabled = 0 
+name=CentOS-6.4 - CentOSPlus
+baseurl=http://vault.centos.org/6.4/centosplus/$basearch/
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-6
+
+@
+
+
+1.1
+log
+@Original File
+@
+text
+@d9 1
+d14 1
+a14 1
+enabled=0
+d17 1
+d22 1
+a22 1
+enabled=0
+d25 1
+d30 1
+a30 1
+enabled=0
+d33 1
+d38 1
+a38 1
+enabled=0
+d41 1
+d46 1
+a46 1
+enabled=0
+d50 1
+d55 1
+a55 1
+enabled=0
+d58 1
+d63 1
+a63 1
+enabled=0
+d66 1
+d71 1
+a71 1
+enabled=0
+d74 1
+d79 1
+a79 1
+enabled=0
+d82 1
+d87 1
+a87 1
+enabled=0
+d91 1
+d96 1
+a96 1
+enabled=0
+d99 1
+d104 1
+a104 1
+enabled=0
+d107 1
+d112 1
+a112 1
+enabled=0
+d115 1
+d120 1
+a120 1
+enabled=0
+d123 1
+d128 1
+a128 1
+enabled=0
+d132 1
+d137 1
+a137 1
+enabled=0
+d140 1
+d145 1
+a145 1
+enabled=0
+d148 1
+d153 1
+a153 1
+enabled=0
+d156 1
+d161 1
+a161 1
+enabled=0
+d164 1
+d169 1
+a169 1
+enabled=0
+d173 1
+d178 1
+a178 1
+enabled=0
+d181 1
+d186 1
+a186 1
+enabled=0
+d189 1
+d194 1
+a194 1
+enabled=0
+d197 1
+d202 1
+a202 1
+enabled=0
+d205 1
+d210 1
+a210 1
+enabled=0
+@

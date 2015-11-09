@@ -1,0 +1,43 @@
+head	1.2;
+access;
+symbols;
+locks
+	root:1.2; strict;
+comment	@# @;
+
+
+1.2
+date	2015.10.27.23.26.03;	author root;	state Exp;
+branches;
+next	1.1;
+
+1.1
+date	2015.10.27.23.24.27;	author root;	state Exp;
+branches;
+next	;
+
+
+desc
+@original
+@
+
+
+1.2
+log
+@rocks
+@
+text
+@[Rocks-6.1.1]
+name=Rocks 6.1.1
+baseurl=http://192.168.100.78/install/rocks-dist/x86_64
+enabled = 1
+@
+
+
+1.1
+log
+@Initial revision
+@
+text
+@d1 4
+@

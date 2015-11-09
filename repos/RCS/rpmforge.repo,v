@@ -1,0 +1,89 @@
+head	1.2;
+access;
+symbols;
+locks
+	root:1.2; strict;
+comment	@# @;
+
+
+1.2
+date	2015.10.27.23.24.27;	author root;	state Exp;
+branches;
+next	1.1;
+
+1.1
+date	2015.10.27.23.24.27;	author root;	state Exp;
+branches;
+next	;
+
+
+desc
+@initial revision: 1.1
+done
+RCS/epel.repo,v  <--  epel.repo
+new revision: 1.2; previous revision: 1.1
+done
+RCS/rpmforge.repo,v  <--  rpmforge.repo
+@
+
+
+1.2
+log
+@Disabled by Rocks Post Config
+@
+text
+@### Name: RPMforge RPM Repository for RHEL 6 - dag
+### URL: http://rpmforge.net/
+[rpmforge]
+enabled = 0 
+name = RHEL $releasever - RPMforge.net - dag
+baseurl = http://apt.sw.be/redhat/el6/en/$basearch/rpmforge
+mirrorlist = http://apt.sw.be/redhat/el6/en/mirrors-rpmforge
+#mirrorlist = file:///etc/yum.repos.d/mirrors-rpmforge
+
+protect = 0
+gpgkey = file:///etc/pki/rpm-gpg/RPM-GPG-KEY-rpmforge-dag
+gpgcheck = 1
+
+[rpmforge-extras]
+enabled = 0 
+name = RHEL $releasever - RPMforge.net - extras
+baseurl = http://apt.sw.be/redhat/el6/en/$basearch/extras
+mirrorlist = http://apt.sw.be/redhat/el6/en/mirrors-rpmforge-extras
+#mirrorlist = file:///etc/yum.repos.d/mirrors-rpmforge-extras
+
+protect = 0
+gpgkey = file:///etc/pki/rpm-gpg/RPM-GPG-KEY-rpmforge-dag
+gpgcheck = 1
+
+[rpmforge-testing]
+enabled = 0 
+name = RHEL $releasever - RPMforge.net - testing
+baseurl = http://apt.sw.be/redhat/el6/en/$basearch/testing
+mirrorlist = http://apt.sw.be/redhat/el6/en/mirrors-rpmforge-testing
+#mirrorlist = file:///etc/yum.repos.d/mirrors-rpmforge-testing
+
+protect = 0
+gpgkey = file:///etc/pki/rpm-gpg/RPM-GPG-KEY-rpmforge-dag
+gpgcheck = 1
+@
+
+
+1.1
+log
+@Original File
+@
+text
+@d4 1
+d9 1
+a9 1
+enabled = 1
+d15 1
+d20 1
+a20 1
+enabled = 0
+d26 1
+d31 1
+a31 1
+enabled = 0
+@

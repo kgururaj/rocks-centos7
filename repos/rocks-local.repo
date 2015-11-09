@@ -1,0 +1,4 @@
+[Rocks-6.1.1]
+name=Rocks 6.1.1
+baseurl=http://192.168.100.78/install/rocks-dist/x86_64
+enabled = 0
