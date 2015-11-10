@@ -5,6 +5,7 @@ import os
 import subprocess
 import shutil
 import fix_rocks_network
+import json
 
 pxelinux_kernels_dir='/tftpboot/pxelinux/';
 centos7_dir='/export/rocks/install/centos7/';
