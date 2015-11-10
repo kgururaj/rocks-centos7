@@ -23,7 +23,7 @@ def fix_install_action():
     ks_base_dir = fix_rocks_network.get_rocks_attr('Kickstart_PrivateKickstartBasedir');
     subprocess.call('rocks add bootaction action=install kernel=vmlinuz-centos7 ramdisk=initrd.img-centos7 args="ksdevice=bootif ramdisk_size=16000 ks=http://'+ks_host+'/'+ks_base_dir+'/centos7/ks.cfg"', shell=True);
 
-def setup_for_centos7(ssh_public_key_file=None): 
+def setup_for_centos7(params): 
   #PXE boot changes
   fix_pxe_bug();
   fix_install_action();
@@ -34,8 +34,8 @@ def setup_for_centos7(ssh_public_key_file=None):
   subprocess.call('rocks add appliance compute membership="Compute" node=compute', shell=True);
   #ssh public key
   shutil.rmtree(centos7_ks_scripts_dir+'/ssh_public_key', ignore_errors=True);
-  if(ssh_public_key_file):
-    shutil.copy(ssh_public_key_file, centos7_ks_scripts_dir+'/ssh_public_key');
+  if('ssh_public_keys_file' in params):
+    shutil.copy(params['ssh_public_keys_file'], centos7_ks_scripts_dir+'/ssh_public_key');
   #Get root password
   root_passwd='$6$CdGXnN6zABQ0Pc/7$lsUtU27wSxwpGNrLQq00Mzpwb27ujgkV5Trq8wlZrqOmrmFuX6q5X0hebNKKs5DSk8.fU3o.b6Z0ISOfNnpTl.';
   sys.stderr.write('Enter the root password to be set for your cluster by kickstart\n');
@@ -56,14 +56,22 @@ def setup_for_centos7(ssh_public_key_file=None):
   if(status != 0):
     sys.stderr.write('ERROR: could not setup pre/post install scripts and kickstart file\n');
     raise Exception('Could not setup pre/post install scripts and kickstart file');
+  if('timezone' in params):
+    cmd = 'sed -i -e \'/timezone/c\\\ntimezone '+params['timezone']+'\' '+centos7_dir+'/ks.cfg' 
+    status = subprocess.call(cmd, shell=True);
+    if(status != 0):
+      sys.stderr.write('ERROR: could not setup timezone in kickstart file\n');
+      raise Exception('Could not setup timezone in kickstart file');
   with open(centos7_dir+'/ks.cfg', 'ab') as fptr:
     fptr.write('rootpw --iscrypted '+root_passwd+' \n');
     fptr.close();
 
 
 if __name__ == "__main__":
-    if(len(sys.argv) < 2):
-      setup_for_centos7();
-    else:
-      setup_for_centos7(sys.argv[1]);
+  if(len(sys.argv) < 2):
+    setup_for_centos7({});
+  else:
+    with open(sys.argv[1], 'rb') as data_file:    
+      params = json.load(data_file);
+      setup_for_centos7(params);
 
