@@ -53,7 +53,7 @@ def setup_for_centos7(params):
     sys.stderr.write('ERROR: could not setup pre/post install scripts and kickstart file\n');
     raise Exception('Could not setup pre/post install scripts and kickstart file');
   if('timezone' in params):
-    cmd = 'sed -i -e \'/timezone/c\\\ntimezone '+params['timezone']+'\' '+centos7_dir+'/ks.cfg' 
+    cmd = 'sed -i -e \'/^timezone/c\\\ntimezone '+params['timezone']+'\' '+centos7_dir+'/ks.cfg' 
     status = subprocess.call(cmd, shell=True);
     if(status != 0):
       sys.stderr.write('ERROR: could not setup timezone in kickstart file\n');
