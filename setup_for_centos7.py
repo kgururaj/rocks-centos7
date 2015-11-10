@@ -27,11 +27,6 @@ def setup_for_centos7(params):
   #PXE boot changes
   fix_pxe_bug();
   fix_install_action();
-  #Create new appliance type, if needed
-  #status = subprocess.call('rocks list appliance attr centos7', shell=True, stderr=subprocess.PIPE, stdout=subprocess.PIPE);
-  #if(status != 0):	#no such appliance exists
-  subprocess.call('rocks remove appliance compute', shell=True);
-  subprocess.call('rocks add appliance compute membership="Compute" node=compute', shell=True);
   #ssh public key
   shutil.rmtree(centos7_ks_scripts_dir+'/ssh_public_key', ignore_errors=True);
   if('ssh_public_keys_file' in params):
