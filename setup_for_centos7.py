@@ -31,7 +31,7 @@ def setup_for_centos7(params):
     raise Exception('Missing directory containing CentOS-7 iso contents');
   try:
     os.mkdir(centos7_ks_scripts_dir, 0755);
-  except OSError:
+  except os.OSError:
     pass
   #PXE boot changes
   fix_pxe_bug();

@@ -24,11 +24,13 @@
 </changelog>
 
 <main>
-	<!-- kickstart 'main' commands go here -->
+    <!-- kickstart 'main' commands go here -->
+    <timezone>America/Los_Angeles</timezone>
+    <rootpw>--iscrypted $6$CdGXnN6zABQ0Pc/7$lsUtU27wSxwpGNrLQq00Mzpwb27ujgkV5Trq8wlZrqOmrmFuX6q5X0hebNKKs5DSk8.fU3o.b6Z0ISOfNnpTl.</rootpw> 
 </main>
 
 <pre>
-    wget http://&Kickstart_PrivateKickstartHost;/install/centos6_ks/disk.py 
+    wget http://&Kickstart_PrivateKickstartHost;/install/centos6/disk.py 
     /opt/rocks/bin/python disk.py --force_format compute
 	<!-- partitioning commands go here -->
 </pre>
@@ -58,8 +60,8 @@
 		xmllint -noout file.xml
 	-->
 
-    wget --no-parent -r -nH --cut-dirs=1 http://&Kickstart_PrivateKickstartHost;/install/centos6_ks
-    bash -x ./centos6_ks/post_install.sh &Kickstart_PrivateGateway; 3128
+    wget --no-parent -r -nH --cut-dirs=1 http://&Kickstart_PrivateKickstartHost;/install/centos6
+    bash -x ./centos6/post_install.sh 
     <!--<eval shell="python">-->
       <!---->
       <!-- This is python code that will be executed on the-->
