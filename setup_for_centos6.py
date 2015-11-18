@@ -15,10 +15,12 @@ centos6_ks_scripts_dir=centos6_dir;
 rocks_customize_nodes_dir='/export/rocks/install/site-profiles/6.1.1/nodes/'
 
 def setup_for_centos6(params): 
+  shutil.rmtree(centos6_dir, ignore_errors=True);
   try:
-    os.makedirs(centos6_ks_scripts_dir, 0755);
-  except os.error:
+    os.remove(centos6_dir);
+  except Exception:
     pass
+  os.makedirs(centos6_ks_scripts_dir, 0755);
   #PXE boot changes
   setup_for_centos7.fix_pxe_bug();
   #ssh public key
@@ -32,7 +34,7 @@ def setup_for_centos6(params):
   #Copy extend-compute.xml
   shutil.copy(centos6_templates_dir+'/extend-compute.xml', rocks_customize_nodes_dir+'/extend-compute.xml');
   #Copy other files in the directory
-  status = subprocess.call('rsync -a --delete --exclude=extend-compute.xml '+centos6_templates_dir+'/ '+centos6_ks_scripts_dir+'/', shell=True);
+  status = subprocess.call('rsync -a --exclude=extend-compute.xml '+centos6_templates_dir+'/ '+centos6_ks_scripts_dir+'/', shell=True);
   if(status != 0):
     sys.stderr.write('ERROR: could not copy pre/post install scripts\n');
     raise Exception('Could not copy pre/post install scripts');
