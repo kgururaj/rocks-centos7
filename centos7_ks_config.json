@@ -1,4 +1,0 @@
-{
-    "ssh_public_keys_file" : "/tmp/ssh_public_keys.txt",
-    "timezone" : "America/Los_Angeles"
-}

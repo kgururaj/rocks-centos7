@@ -4,10 +4,11 @@ if [ -f "ssh_public_keys" ]
 then
   mkdir -p /root/.ssh/
   cat ssh_public_keys >> /root/.ssh/authorized_keys
-  chown -R root:root /root/.ssh
-  chmod og-rwX -R /root/.ssh
-  chmod u+rwX -R /root/.ssh
 fi
+
+chown -R root:root /root
+chmod -R u+rwX /root
+chmod -R og-rwX /root
 
 #Set NM_CONTROLLED=no
 nw_scripts=/etc/sysconfig/network-scripts/ifcfg-*

@@ -1,0 +1,6 @@
+{
+    "ssh_public_keys_file" : "/tmp/ssh_public_keys.txt",
+    "timezone" : "America/Los_Angeles",
+    "proxy_host" : "proxy-us.intel.com",
+    "proxy_port" : "3128"
+}
