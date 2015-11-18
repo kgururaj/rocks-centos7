@@ -63,6 +63,11 @@ def setup_for_centos6(params):
     if(status != 0):
       sys.stderr.write('ERROR: could not setup proxy args for post-install\n');
       raise Exception('Could not setup proxy args for post-install');
+  status = subprocess.call('cd /export/rocks/install && rocks create distro', shell=True);
+  if(status != 0):
+    sys.stderr.write('ERROR: could not build rocks distro\n');
+    raise Exception('Could not build rocks distro');
+
 
 if __name__ == "__main__":
   directory = os.path.dirname(sys.argv[0]);
