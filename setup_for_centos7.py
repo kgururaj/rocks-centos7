@@ -8,6 +8,7 @@ import fix_rocks_network
 import json
 
 pxelinux_kernels_dir='/tftpboot/pxelinux/';
+centos7_templates_dir='./centos7_ks'
 centos7_dir='/export/rocks/install/centos7/';
 centos7_ks_scripts_dir=centos7_dir+'/scripts/';
 centos7_pxeboot_dir=centos7_dir+'/images/pxeboot';
@@ -41,10 +42,12 @@ def setup_for_centos7(params):
     root_passwd = stdout_str.strip();
   else:
     sys.stderr.write('ERROR: could not obtain root password, using a random string. Re-run the program to set your root passwd\n');
+  #Copy disk.py file for partitioning
+  shutil.copy(centos7_templates_dir+'/scripts/disk.py', centos7_ks_scripts_dir+'/disk.py');
   #Create files from templates
-  shutil.copy(centos7_dir+'/ks_template.cfg', centos7_dir+'/ks.cfg');
-  shutil.copy(centos7_ks_scripts_dir+'/pre_install_template.sh', centos7_ks_scripts_dir+'/pre_install.sh');
-  shutil.copy(centos7_ks_scripts_dir+'/post_install_template.sh', centos7_ks_scripts_dir+'/post_install.sh');
+  shutil.copy(centos7_templates_dir+'/ks_template.cfg', centos7_dir+'/ks.cfg');
+  shutil.copy(centos7_templates_dir+'/scripts/pre_install_template.sh', centos7_ks_scripts_dir+'/pre_install.sh');
+  shutil.copy(centos7_templates_dir+'/scripts/post_install_template.sh', centos7_ks_scripts_dir+'/post_install.sh');
   ks_host = fix_rocks_network.get_rocks_attr('Kickstart_PrivateKickstartHost');
   ks_base_dir = fix_rocks_network.get_rocks_attr('Kickstart_PrivateKickstartBasedir');
   cmd = 'sed -i -e \'s/Kickstart_PrivateKickstartHost/'+ks_host+'/g\' -e \'s/Kickstart_PrivateKickstartBasedir/'+ks_base_dir+'/g\' '+centos7_ks_scripts_dir+'/post_install.sh '+centos7_ks_scripts_dir+'/pre_install.sh '+centos7_dir+'/ks.cfg';
@@ -62,8 +65,10 @@ def setup_for_centos7(params):
     fptr.write('rootpw --iscrypted '+root_passwd+' \n');
     fptr.close();
 
-
 if __name__ == "__main__":
+  directory = os.path.dirname(sys.argv[0]);
+  if(directory and directory != ''):
+    os.chdir(directory);
   if(len(sys.argv) < 2):
     setup_for_centos7({});
   else:
