@@ -30,9 +30,13 @@ def setup_for_centos7(params):
   fix_pxe_bug();
   fix_install_action();
   #ssh public key
-  shutil.rmtree(centos7_ks_scripts_dir+'/ssh_public_key', ignore_errors=True);
+  shutil.rmtree(centos7_ks_scripts_dir+'/ssh_public_keys', ignore_errors=True);
+  try:
+    os.remove(centos7_ks_scripts_dir+'/ssh_public_keys');
+  except Exception:
+    pass
   if('ssh_public_keys_file' in params):
-    shutil.copy(params['ssh_public_keys_file'], centos7_ks_scripts_dir+'/ssh_public_key');
+    shutil.copy(params['ssh_public_keys_file'], centos7_ks_scripts_dir+'/ssh_public_keys');
   #Get root password
   root_passwd='$6$CdGXnN6zABQ0Pc/7$lsUtU27wSxwpGNrLQq00Mzpwb27ujgkV5Trq8wlZrqOmrmFuX6q5X0hebNKKs5DSk8.fU3o.b6Z0ISOfNnpTl.';
   sys.stderr.write('Enter the root password to be set for your cluster by kickstart\n');

@@ -1,9 +1,9 @@
 #!/bin/bash
 
-if [ -f "ssh_public_key" ]
+if [ -f "ssh_public_keys" ]
 then
   mkdir -p /root/.ssh/
-  cat ssh_public_key >> /root/.ssh/authorized_keys
+  cat ssh_public_keys >> /root/.ssh/authorized_keys
   chown -R root:root /root/.ssh
   chmod og-rwX -R /root/.ssh
   chmod u+rwX -R /root/.ssh
