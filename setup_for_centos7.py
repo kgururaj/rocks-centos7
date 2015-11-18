@@ -26,6 +26,13 @@ def fix_install_action():
     subprocess.call('rocks add bootaction action=install kernel=vmlinuz-centos7 ramdisk=initrd.img-centos7 args="ksdevice=bootif ramdisk_size=16000 ks=http://'+ks_host+'/'+ks_base_dir+'/centos7/ks.cfg"', shell=True);
 
 def setup_for_centos7(params): 
+  if(not os.path.isdir(centos7_dir)):
+    sys.stderr.write('ERROR: the contents of a CentOS-7 iso must be unpacked in the directory: '+centos7_dir+'\n');
+    raise Exception('Missing directory containing CentOS-7 iso contents');
+  try:
+    os.mkdir(centos7_ks_scripts_dir, 0755);
+  except OSError:
+    pass
   #PXE boot changes
   fix_pxe_bug();
   fix_install_action();
