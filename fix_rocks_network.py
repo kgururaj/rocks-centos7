@@ -6,6 +6,7 @@ import json
 import socket
 import shutil
 import os
+import ipaddress
 
 def exit_if_error(ret_code):
     if(ret_code != 0):
@@ -19,9 +20,9 @@ def sync_network(hostname):
 def get_ip_for_interface(eth):
     cmd='ip -f inet -o addr show dev '+eth;
     pid = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE);
+    stdout_str = pid.communicate()[0];
     if(pid.returncode != 0):
         return '';
-    stdout_str = pid.communicate()[0];
     tokens = stdout_str.split();
     if(len(tokens) >= 4):
         return tokens[3].split('/')[0];
@@ -31,21 +32,22 @@ def get_ip_for_interface(eth):
 def get_subnet(ipaddr, netmask):
     if(ipaddr == '' or netmask == ''):
         return '';
-    int_ip = [];
-    tokens = ipaddr.split('.');
-    for val in tokens:
-        int_ip.append(int(val));
-    int_netmask = [];
-    tokens = netmask.split('.');
-    for val in tokens:
-        int_netmask.append(int(val));
-    int_subnet=int_ip;
-    for i in range(len(int_ip)):
-        int_subnet[i] = int_ip[i] & int_netmask[i];
-    subnet_string=[];
-    for val in int_subnet:
-        subnet_string.append(str(val));
-    return '.'.join(subnet_string);
+    interface = ipaddress.IPv4Interface(unicode(ipaddr+'/'+netmask));
+    subnet_with_prefix = str(interface.network);
+    tokens = subnet_with_prefix.split('/');
+    return tokens[0];
+
+def get_prefix_length(ipaddr, netmask):
+    if(ipaddr == '' or netmask == ''):
+        return '';
+    interface = ipaddress.IPv4Interface(unicode(ipaddr+'/'+netmask));
+    return str(interface.network.prefixlen);
+
+def get_broadcast_address(ipaddr, netmask):
+    if(ipaddr == '' or netmask == ''):
+        return '';
+    interface = ipaddress.IPv4Interface(unicode(ipaddr+'/'+netmask));
+    return str(interface.network.broadcast_address);
 
 def get_rocks_attr(attr_name):
     pid = subprocess.Popen('rocks list attr | grep '+attr_name, shell=True, stdout=subprocess.PIPE);
@@ -117,6 +119,11 @@ def fix_rocks_private_interface(private_eth_params):
         if(subnet_value != ''):
             subprocess.call('rocks set network subnet private '+subnet_value, shell=True);
             subprocess.call('rocks set attr Kickstart_PrivateNetwork '+subnet_value, shell=True);
+    if('netmask' in private_eth_params and 'ip' in private_eth_params):
+        broadcast_address = get_broadcast_address(private_eth_params['ip'], private_eth_params['netmask']);
+        subprocess.call('rocks set attr Kickstart_PrivateBroadcast '+broadcast_address, shell=True);
+        prefix_length = get_prefix_length(private_eth_params['ip'], private_eth_params['netmask']);
+        subprocess.call('rocks set attr Kickstart_PrivateNetmaskCIDR '+prefix_length, shell=True);
     if('zone' in private_eth_params):
         pid = subprocess.Popen('rocks list network private|grep -v SUBNET', shell=True, stdout=subprocess.PIPE);
         stdout_str = pid.communicate()[0];
@@ -133,7 +140,9 @@ def fix_rocks_private_interface(private_eth_params):
 
 def fix_rocks_public_interface(public_eth_params):
     hostname = socket.gethostname();
-    rocks_hostname = hostname.split('.')[0];
+    hostname_tokens = hostname.split('.');
+    rocks_hostname = hostname_tokens[0];
+    zone_from_hostname = '.'.join(hostname_tokens[1:]) if (len(hostname_tokens) > 1) else '';
     old_eth = get_rocks_attr('Kickstart_PublicInterface');
     eth = old_eth;
     ipaddr = get_ip_for_interface(eth);
@@ -150,7 +159,6 @@ def fix_rocks_public_interface(public_eth_params):
         if(public_eth_params['ip_source'] == 'static'):
             if('ip' in public_eth_params):
                 subprocess.call('rocks set host interface ip '+rocks_hostname+' '+eth+' '+public_eth_params['ip'], shell=True);
-                subprocess.call('rocks set attr Kickstart_PublicAddress '+public_eth_params['ip'], shell=True);
                 ipaddr = public_eth_params['ip'];
         else:
             subprocess.call('rocks set host interface ip '+rocks_hostname+' '+eth+' ip=NULL', shell=True);
@@ -160,6 +168,7 @@ def fix_rocks_public_interface(public_eth_params):
             shutil.rmtree(lease_file, ignore_errors=True);
             sync_network(rocks_hostname);
             ipaddr = get_ip_for_interface(eth);
+            public_eth_params['ip'] = ipaddr
             fptr = open(lease_file, 'rb');
             for line in fptr:
                 tokens = line.split();
@@ -175,6 +184,10 @@ def fix_rocks_public_interface(public_eth_params):
                     elif(tokens[1] == 'domain-name-servers' and 'dnsservers' not in public_eth_params):
                         public_eth_params['dnsservers'] = value.split(',');
             fptr.close();
+    if('zone' not in public_eth_params and zone_from_hostname != ''):
+        public_eth_params['zone'] = zone_from_hostname;
+    if('ip' in public_eth_params):
+        subprocess.call('rocks set attr Kickstart_PublicAddress '+public_eth_params['ip'], shell=True);
     if('gateway' in public_eth_params):
         subprocess.call('rocks remove host route '+rocks_hostname+' 0.0.0.0', shell=True);
         subprocess.call('rocks add host route '+rocks_hostname+' 0.0.0.0 '+public_eth_params['gateway']+ ' netmask=0.0.0.0', shell=True);
@@ -186,6 +199,11 @@ def fix_rocks_public_interface(public_eth_params):
         if(subnet_value != ''):
             subprocess.call('rocks set network subnet public '+subnet_value, shell=True);
             subprocess.call('rocks set attr Kickstart_PublicNetwork '+subnet_value, shell=True);
+    if('netmask' in public_eth_params and 'ip' in public_eth_params):
+        broadcast_address = get_broadcast_address(public_eth_params['ip'], public_eth_params['netmask']);
+        subprocess.call('rocks set attr Kickstart_PublicBroadcast '+broadcast_address, shell=True);
+        prefix_length = get_prefix_length(public_eth_params['ip'], public_eth_params['netmask']);
+        subprocess.call('rocks set attr Kickstart_PublicNetmaskCIDR '+prefix_length, shell=True);
     if('zone' in public_eth_params):
         pid = subprocess.Popen('rocks list network public|grep -v SUBNET', shell=True, stdout=subprocess.PIPE);
         stdout_str = pid.communicate()[0];

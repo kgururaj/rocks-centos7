@@ -75,13 +75,14 @@ def doDisk(file, disk, disk_size, force_format=False, root_partition_size=None):
         else:
             swap_size = min(max_swap, disk_size-recommended_root_size);
             root_partition_size = disk_size-swap_size;
+    file.write(('part biosboot --fstype=biosboot --size=1 --ondisk=%s\n')%(disk))
     if(swap_size > 0):
         file.write(('part swap --fstype="swap" --size=%d --ondisk=%s\n') % (swap_size*1024, disk))  #MB - as per kickstart
     if(root_partition_size < (disk_size - swap_size)):
         file.write('part / --fstype="ext4" --size=%d --ondisk=%s\n' % (root_partition_size*1024, disk))
     else:
         file.write('part / --fstype="ext4" --size=1 --grow --ondisk=%s\n'    % disk)
-    file.write('bootloader --location=mbr\n');
+    file.write('bootloader --location=mbr --boot-drive=%s\n'%disk);
 
 #                            
 # main

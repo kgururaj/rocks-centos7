@@ -1,0 +1,19 @@
+{
+	"hostname" : "rocks-vlan0.ccc.org",
+	"public_eth" : 
+		{
+			"name" : "eth2",
+			"ip_source" : "dynamic",
+                        "dnsservers" : [ "75.75.75.75", "75.75.76.76" ],
+                        "zone" : "ccc.org"
+		},
+        "private_eth" : 
+		{
+			"name" : "eth3",
+                        "ip" : "192.168.1.2",
+			"gateway" : "192.168.1.1",
+			"gateway_name" : "dfci-gateway",
+			"netmask" : "255.255.255.0",
+			"zone" : "internal.ccc.org"
+		}
+}
