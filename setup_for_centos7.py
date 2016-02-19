@@ -77,13 +77,12 @@ def setup_for_centos7(params):
     fptr.close();
 
 if __name__ == "__main__":
+  params = {};
+  if(len(sys.argv) >= 2):
+    with open(sys.argv[1], 'rb') as data_file:    
+      params = json.load(data_file);
   directory = os.path.dirname(sys.argv[0]);
   if(directory and directory != ''):
     os.chdir(directory);
-  if(len(sys.argv) < 2):
-    setup_for_centos7({});
-  else:
-    with open(sys.argv[1], 'rb') as data_file:    
-      params = json.load(data_file);
-      setup_for_centos7(params);
+  setup_for_centos7(params);
 
