@@ -1,0 +1,3 @@
+alter table subnets add column servedhcp tinyint(1) default 0;
+alter table subnets add column gateway_ip varchar(32);
+

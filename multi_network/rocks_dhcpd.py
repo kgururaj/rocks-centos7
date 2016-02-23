@@ -174,6 +174,7 @@ import rocks
 import string
 import rocks.commands
 import rocks.ip
+import ipaddress
 
 class Command(rocks.commands.HostArgumentProcessor,
 	rocks.commands.report.command):
@@ -226,20 +227,25 @@ class Command(rocks.commands.HostArgumentProcessor,
 			
 			
 	def printOptions(self, prefix, network_dict):
-		self.addOutput('', '%soption routers %s;' %
-			(prefix, network_dict['gateway']))
+		if('gateway' in network_dict):
+			self.addOutput('', '%soption routers %s;' %
+					(prefix, network_dict['gateway']))
 
-		self.addOutput('', '%soption subnet-mask %s;' %
-			(prefix, network_dict['netmask']))
+		if('netmask' in network_dict):
+			self.addOutput('', '%soption subnet-mask %s;' %
+				(prefix, network_dict['netmask']))
 
-		self.addOutput('', '%soption domain-name "%s";' %
-			(prefix, network_dict['domain-name']))
+		if('domain-name' in network_dict):
+			self.addOutput('', '%soption domain-name "%s";' %
+				(prefix, network_dict['domain-name']))
 
-		self.addOutput('', '%soption domain-name-servers %s;' %
-			(prefix, network_dict['dns_server']))
+		if('dns_server' in network_dict):
+			self.addOutput('', '%soption domain-name-servers %s;' %
+				(prefix, network_dict['dns_server']))
 
-		self.addOutput('', '%soption broadcast-address %s;' %
-			(prefix, network_dict['broadcast-address']))
+		if('broadcast-address' in network_dict):
+			self.addOutput('', '%soption broadcast-address %s;' %
+				(prefix, network_dict['broadcast-address']))
 		try:
 			self.db.execute("""SELECT mtu FROM subnets WHERE 
 				subnets.name='%s'"""%(network_dict['name']))
@@ -285,7 +291,7 @@ class Command(rocks.commands.HostArgumentProcessor,
 			""" % (network_name))
 			network_info = self.db.fetchall();
 			if(len(network_info) != 1):
-				sys.stderr.write("Ignoring network %s as it's info is not found in the DB\n"%network_name)
+				sys.stderr.write("Ignoring network %s as its info is not found in the DB\n"%network_name)
 				continue;
 			dn = network_info[0][0]
 			network = network_info[0][1]
@@ -435,8 +441,30 @@ class Command(rocks.commands.HostArgumentProcessor,
 					'dns_server':self.db.getHostAttr('localhost', 'Kickstart_PrivateDNSServers'),
 					'broadcast-address':self.db.getHostAttr('localhost', 'Kickstart_PrivateBroadcast')
 					},
-				#{ 'name': 'rmm', 'gateway':'192.168.2.1', 'dns_server':'192.168.2.2', 'broadcast-address':'192.168.2.255'},
 				]
+		fe_name = self.db.getHostname('localhost')
+		self.db.execute("""select name,subnet,netmask,servedns,servedhcp,gateway_ip from subnets where name!='public'
+				and name!='private'""")
+		network_info_list = self.db.fetchall()
+		for network_info in network_info_list:
+			(name, subnet, netmask, servedns, servedhcp,gateway_ip) = network_info
+			if(servedhcp and servedhcp == 1):
+				network_info_dict = {}
+				network_info_dict['name'] = name;
+				if(gateway_ip and len(gateway_ip) > 0):
+					network_info_dict['gateway'] = gateway_ip;
+				num_ips = self.db.execute("""select IP from networks,nodes,subnets where
+				nodes.id=networks.Node and subnets.id=networks.subnet
+				and subnets.name='%s' and nodes.name='%s'"""%(name, fe_name))
+				fe_network_ip = None
+				if(num_ips == 1):
+					fe_network_ip = self.db.fetchone()[0];
+				if(fe_network_ip and len(fe_network_ip) > 0):
+					if(servedns and servedns == 1):
+						network_info_dict['dns_server'] = fe_network_ip;
+					network_info_dict['broadcast-address'] = \
+							str(ipaddress.IPv4Interface(unicode(fe_network_ip+'/'+netmask)).network.broadcast_address);
+				all_networks.append(network_info_dict)
 		self.writeDhcpDotConf(hosts, all_networks)
 		self.writeDhcpSysconfig(all_networks)
 		self.endOutput(padChar='')
