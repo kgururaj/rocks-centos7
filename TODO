@@ -5,6 +5,7 @@ hostname short_hostname &&  rocks add host alias short FQDN && rocks sync config
 
 Fix proxy in yum.conf
 Change root password, re-generate ssh keys
+Change MySQL root password
 NTP, time zone
 Decide managed/unmanaged and kickstartable appliances
 Remove v00 from hosts after fixing 
