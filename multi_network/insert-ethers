@@ -1660,6 +1660,7 @@ class App(rocks.sql.Application):
 			('hostname=', 'hostname'),
 			('ipaddr=', 'ip address'),
 			('cabinet=', 'number'),
+			('network=', 'network'),
 			('rack=', 'number'),
 			('inc=', 'number'),
 			('rank=', 'number'),
