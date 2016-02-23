@@ -108,6 +108,9 @@ def fix_rocks_private_interface(private_eth_params):
 	unique_name = unique_name+'-'+str(os.urandom(2));
       subprocess.call('rocks add host '+unique_name+' cpus=1 membership="Ethernet Switch" rack=0 rank=0', shell=True);
       subprocess.call('rocks add host interface '+unique_name+' eth0 ip='+private_eth_params['gateway']+' subnet=private', shell=True);
+      private_eth_params['gateway_name'] = unique_name;
+    if('gateway_name' in private_eth_params and private_eth_params['gateway_name'] != 'gateway'):
+      subprocess.call('rocks add host alias '+private_eth_params['gateway_name']+' gateway ', shell=True);
     if('vm_host_name' in private_eth_params and 'vm_host' in private_eth_params):
       unique_name = private_eth_params['vm_host_name'];
       subprocess.call('rocks add host '+unique_name+' cpus=1 membership="Ethernet Switch" rack=0 rank=0', shell=True);

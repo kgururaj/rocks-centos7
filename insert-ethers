@@ -812,6 +812,9 @@ class InsertEthers(GUI):
 	def setBroadcast(self, bcast):
 		self.broadcast = bcast 
 
+	def setSubnet(self, subnet):
+		self.subnet = subnet
+
 	def setCpus(self, ncpus):
 		self.ncpus = ncpus 
 
@@ -1683,6 +1686,8 @@ class App(rocks.sql.Application):
 			self.insertor.setMax(1)
 		elif c[0] in ('--cabinet','--rack'):
 			self.insertor.setCabinet(int(c[1]))
+		elif c[0] in ('--network'):
+			self.insertor.setSubnet(c[1])
 		elif c[0] == '--os':
 			self.insertor.setOSName(c[1])
 		elif c[0] == '--inc':
