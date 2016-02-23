@@ -9,6 +9,7 @@ NTP, time zone
 Decide managed/unmanaged and kickstartable appliances
 Remove v00 from hosts after fixing 
 virsh austostart VM on the host
+Set resolv.conf correctly
 
 #NOT needed
 Fix root directory permissions
