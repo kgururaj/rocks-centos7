@@ -19,7 +19,7 @@ chmod og-rwX -R /root/.ssh
 #Virtualization tools
 yum -y install https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
 yum -y clean all
-yum -y install virt-install virt-manager ansible-lint ansible iptables-services facter xorg-x11-xauth
+yum -y install virt-install virt-manager ansible-lint ansible iptables-services facter xorg-x11-xauth ipmitool
 
 #Enable IP forwarding
 echo 1 > /proc/sys/net/ipv4/ip_forward
