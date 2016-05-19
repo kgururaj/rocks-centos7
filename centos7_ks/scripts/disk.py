@@ -112,7 +112,7 @@ def get_parted_disk_list():
     for line in list:
         if(next_is_disk):
             new_line = line.strip();
-	    if(new_line.find('loop') == -1):	#not a loop-back device
+	    if(new_line.find('loop') == -1 and new_line.find('zram') == -1):	#not a loop-back device and not a ramdisk device
 	      new_line = new_line.replace(';','');
 	      disk_list.append(new_line.split(':'));
             next_is_disk = False;
