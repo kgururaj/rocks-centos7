@@ -769,6 +769,7 @@ class InsertEthers(GUI):
 		self.ipaddr		= None
 		self.netmask		= None
 		self.subnet		= 'private' # Internal Network
+		self.vlanid             = None
 		self.broadcast		= None
 		self.appliance_name	= None
 		self.device		= None
@@ -814,6 +815,9 @@ class InsertEthers(GUI):
 
 	def setSubnet(self, subnet):
 		self.subnet = subnet
+
+	def setVlanId(self, vlanid):
+		self.vlanid = vlanid;
 
 	def setCpus(self, ncpus):
 		self.ncpus = ncpus 
@@ -927,17 +931,20 @@ class InsertEthers(GUI):
 
 		self.membership, basename, self.distid = \
 			self.sql.fetchone()
-		
-		# Check if the appliance is kickstartable. We only need
-		# to check the appliance_attributes table in this instance
-		# since this value cannot be in any other table yet.
-		query = 'select if(aa.value="yes", True, False) from '	+\
-			'appliance_attributes aa, appliances a where '	+\
-			'a.name="%s" and aa.appliance=a.id ' % basename+\
-			'and aa.attr="kickstartable"'
-		rows = self.sql.execute(query)
-		if rows > 0:
-			self.kickstartable = bool(self.sql.fetchone()[0])
+
+		if(self.subnet == 'private'):
+			# Check if the appliance is kickstartable. We only need
+			# to check the appliance_attributes table in this instance
+			# since this value cannot be in any other table yet.
+			query = 'select if(aa.value="yes", True, False) from '	+\
+				'appliance_attributes aa, appliances a where '	+\
+				'a.name="%s" and aa.appliance=a.id ' % basename+\
+				'and aa.attr="kickstartable"'
+			rows = self.sql.execute(query)
+			if rows > 0:
+				self.kickstartable = bool(self.sql.fetchone()[0])
+		else:
+			self.kickstartable = False;
 
 		#
 		# if the basename was not overridden on the command line
@@ -978,7 +985,7 @@ class InsertEthers(GUI):
 
 		self.clusterdb.insert(nodename, self.membership, 
 			self.cabinet, self.rank, self.mac, self.ipaddr, 
-			self.netmask, self.subnet, self.osname)
+			self.netmask, self.subnet, self.osname, self.vlanid)
 
 		# Execute any plugins when adding hosts via
 		# command-line parameters
@@ -1299,7 +1306,10 @@ class InsertEthers(GUI):
 		
 		retval = 'false'
 
-		query = 'select mac from networks where mac="%s"' % (mac)
+		query = ("""
+			select mac from networks,subnets where mac='%s'
+			and subnets.name='%s' and networks.subnet=subnets.id
+			""") % (mac, self.subnet);
 
 		if self.sql.execute(query) == 0:
 			nodename = self.getNodename()
@@ -1515,8 +1525,8 @@ class InsertEthers(GUI):
 			self.membershipGUI()
 			self.initializeRank()
 
-			if self.hostname:
-				self.clusterdb.checkName(self.hostname)
+			#if self.hostname:
+				#self.clusterdb.checkName(self.hostname)
 
 		except (ValueError, InsertError), msg:
 			self.errorGUI(msg)
@@ -1661,6 +1671,7 @@ class App(rocks.sql.Application):
 			('ipaddr=', 'ip address'),
 			('cabinet=', 'number'),
 			('network=', 'network'),
+			('vlanid=', 'vlanid'),
 			('rack=', 'number'),
 			('inc=', 'number'),
 			('rank=', 'number'),
@@ -1689,6 +1700,8 @@ class App(rocks.sql.Application):
 			self.insertor.setCabinet(int(c[1]))
 		elif c[0] in ('--network'):
 			self.insertor.setSubnet(c[1])
+		elif c[0] in ('--vlanid'):
+			self.insertor.setVlanId(c[1])
 		elif c[0] == '--os':
 			self.insertor.setOSName(c[1])
 		elif c[0] == '--inc':

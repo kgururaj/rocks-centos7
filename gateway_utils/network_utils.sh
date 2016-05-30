@@ -31,7 +31,7 @@ function create_bridge
   ifcfg_file="/etc/sysconfig/network-scripts/ifcfg-$eth"
   if [ -f  "$ifcfg_file" ]
   then
-    sed -i -e '/ONBOOT/d' -e '/BOOTPROTO/d' -e '/NM_CONTROLLED/d' -e '/PEERDNS/d' -e '/BRIDGE/d' "$ifcfg_file"
+    sed -i -e '/ONBOOT/d' -e '/BOOTPROTO/d' -e '/NM_CONTROLLED/d' -e '/PEERDNS/d' -e '/BRIDGE/d' -e '/DEFROUTE/d' "$ifcfg_file"
   else
     echo "DEVICE=$eth" > $ifcfg_file
   fi
@@ -99,6 +99,7 @@ IPV6INIT=no
     echo "
 IPADDR=$ip
 NETMASK=$netmask
+DEFROUTE=no
 " >> /etc/sysconfig/network-scripts/ifcfg-${eth}.${vlan}
   fi
 }

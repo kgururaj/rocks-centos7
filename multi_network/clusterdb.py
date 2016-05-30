@@ -136,7 +136,6 @@
 
 import os
 
-
 class Nodes:
 	"""A class that knows how to insert/delete rocks appliances from
 	the cluster database"""
@@ -151,28 +150,34 @@ class Nodes:
 		return self.nodeid
 		
 	def insert(self, name, mid, rack, rank, mac=None, ip=None,
-			netmask=None, subnet='private', osname='linux'):
+			netmask=None, subnet='private', osname='linux', vlanid=None):
 
 		"""Inserts a new node into the database. Optionally inserts
 		networking information as well."""
-
-		self.checkName(name)
+		
+		nodeid, mac_exists = self.checkNameAndMAC(name, mac, subnet, vlanid)
 		self.checkMembership(mid)
-		self.checkMAC(mac)
 		self.checkIP(ip)
 		self.checkSubnet(subnet)
 		
-		#
-		# create a new row in nodes table
-		#
-		insert = ('insert into nodes (name,membership,rack,rank,os) '
-			'values ("%s", %d, %d, %d, "%s") ' %
-			(name, mid, rack, rank, osname))
+		if(not nodeid):
+			#
+			# create a new row in nodes table
+			#
+			insert = ('insert into nodes (name,membership,rack,rank,os) '
+				'values ("%s", %d, %d, %d, "%s") ' %
+				(name, mid, rack, rank, osname))
 
-		self.sql.execute(insert)
+			self.sql.execute(insert)
 
-		# The last insert id.
-		nodeid = self.sql.insertId()
+			# The last insert id.
+			nodeid = self.sql.insertId()
+			# Set the value of the OS in the host attributes table
+			db_cmd = ('insert into node_attributes '
+				'(node, attr, value) '
+				'values (%d, "%s","%s")' % (nodeid, 'os', osname))
+
+			self.sql.execute(db_cmd)
 
 		# Do not go further if there is no networking info.
 		if ip is None:
@@ -204,13 +209,51 @@ class Nodes:
 
 		self.sql.execute(insert)
 		self.nodeid = nodeid
+		
+		sql_command = 'update networks set device=\'%s\' where node=%d and subnet=%d'%(subnet, int(nodeid), int(subnet_id))
+		self.sql.execute(sql_command);
+		
+		if(vlanid):
+			sql_command = 'update networks set vlanid=%d where node=%d and subnet=%d'%(int(vlanid), int(nodeid), int(subnet_id))
+			self.sql.execute(sql_command);
 
-		# Set the value of the OS in the host attributes table
-		db_cmd = ('insert into node_attributes '
-			'(node, attr, value) '
-			'values (%d, "%s","%s")' % (nodeid, 'os', osname))
+		
+	def checkNameAndMAC(self, checkname, mac, subnet, vlanid):
+		"""Check to make sure we don't insert a duplicate node name or
+		other bad things into the DB"""
+	
+		msg = self.checkNameValidity(checkname)
+		if msg :
+			raise ValueError, msg
 
-		self.sql.execute(db_cmd)
+		host = self.sql.getNodeId(checkname)
+	
+		if mac:
+			query = 'select mac from networks where mac = "%s"' % mac
+			self.sql.execute(query)
+			if(not self.sql.fetchone()):
+				mac = None;
+		
+		if not host and not mac:
+			return None, None;
+		if not host and mac:
+			msg = 'Node '+checkname+' does not exist but MAC '+mac+' found in DB';
+			raise ValueError, msg;
+		if host and subnet:
+			sql_command = """select networks.node from networks,subnets where subnets.name='%s' and
+			subnets.id=networks.subnet and networks.node=%d"""%(subnet, int(host))
+			self.sql.execute(sql_command);
+			if(self.sql.fetchone()):   #node already exists in subnet, error
+				msg = 'Node '+checkname+' already exists in the network '+subnet;
+				raise ValueError, msg;
+			if(mac):
+				sql_command = """select networks.node from networks,subnets where subnets.name='%s' and
+				subnets.id=networks.subnet and networks.mac='%s'"""%(subnet, str(mac))
+				self.sql.execute(sql_command);
+				if(self.sql.fetchone()):  #MAC already exists in subnet, error
+					msg = 'MAC '+str(mac)+' already exists in the network '+subnet;
+					raise ValueError, msg;
+		return host, mac 
 
 	def checkName(self, checkname):
 		"""Check to make sure we don't insert a duplicate node name or
