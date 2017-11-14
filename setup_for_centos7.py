@@ -23,7 +23,7 @@ def fix_install_action():
     shutil.copy(centos7_pxeboot_dir+'/initrd.img', pxelinux_kernels_dir+'/initrd.img-centos7');
     ks_host = fix_rocks_network.get_rocks_attr('Kickstart_PrivateKickstartHost');
     ks_base_dir = fix_rocks_network.get_rocks_attr('Kickstart_PrivateKickstartBasedir');
-    subprocess.call('rocks add bootaction action=install kernel=vmlinuz-centos7 ramdisk=initrd.img-centos7 args="ksdevice=bootif ramdisk_size=16000 ks=http://'+ks_host+'/'+ks_base_dir+'/centos7/ks.cfg"', shell=True);
+    subprocess.call('rocks add bootaction action=install kernel=vmlinuz-centos7 ramdisk=initrd.img-centos7 args="ksdevice=bootif ramdisk_size=16000 ks=http://'+ks_host+'/'+ks_base_dir+'/centos7/ks.cfg rhgb quiet console=tty0 console=ttyS0,115200n8"', shell=True);
 
 def setup_for_centos7(params): 
   if(not os.path.isdir(centos7_dir)):
